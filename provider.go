@@ -15,6 +15,7 @@ var httpClient = &http.Client{
 
 type Provider interface {
 	GetKey(keyid string) (*jose.JSONWebKey, error)
+	fetchKeys() (jose.JSONWebKeySet, error)
 }
 
 // Provider is the JWKS provider implementation
@@ -27,8 +28,8 @@ type Options struct {
 	timeout time.Duration
 }
 
-func CreateProvider(endpoint string, options Options) *Provider {
-	return &Provider{
+func CreateProvider(endpoint string, options Options) *DefaultProvider {
+	return &DefaultProvider{
 		endpoint: endpoint,
 		cache:    cache.New(options.timeout, 15*time.Minute),
 	}
